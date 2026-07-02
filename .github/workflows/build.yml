@@ -24,30 +24,13 @@ jobs:
           java-version: '17'
           cache: 'gradle'
 
-      - name: Check if Gradle wrapper jar exists
-        id: wrapper_check
-        run: |
-          if [ -f "gradle/wrapper/gradle-wrapper.jar" ]; then
-            echo "exists=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "exists=false" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Install Gradle (only if wrapper jar is missing)
-        if: steps.wrapper_check.outputs.exists == 'false'
+      - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.7'
 
-      - name: Generate missing Gradle wrapper
-        if: steps.wrapper_check.outputs.exists == 'false'
-        run: gradle wrapper --gradle-version 8.7
-
-      - name: Make gradlew executable
-        run: chmod +x ./gradlew
-
       - name: Build debug APK
-        run: ./gradlew assembleDebug --stacktrace
+        run: gradle assembleDebug --stacktrace
 
       - name: Upload debug APK artifact
         uses: actions/upload-artifact@v4
