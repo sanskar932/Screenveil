@@ -1,4 +1,4 @@
-package com.screenveil.app
+        package com.screenveil.app
 
 import android.app.Notification
 import android.app.NotificationChannel
@@ -72,12 +72,6 @@ class OverlayService : Service() {
                 if (enabled) startVideoModeRefresh() else stopVideoModeRefresh()
             }
         }
-        // START_STICKY: if the system kills this service under memory
-        // pressure, it will attempt to recreate it, restoring the overlay
-        // automatically. onStartCommand will then be called again with a
-        // null intent, in which case we do nothing (no action to act on) -
-        // the overlay view itself is only recreated when ACTION_START is
-        // explicitly sent (e.g. by BootReceiver or MainActivity).
         return START_STICKY
     }
 
@@ -93,6 +87,29 @@ class OverlayService : Service() {
     // Overlay window management
     // ---------------------------------------------------------------
 
+    /**
+     * IMPORTANT PLATFORM LIMITATION - read before changing this function:
+     *
+     * This overlay (and ANY SYSTEM_ALERT_WINDOW-based overlay, from any app)
+     * can never draw on top of the actual status bar icons/clock or the
+     * pulled-down notification shade itself. Android reserves those specific
+     * layers exclusively for the system (com.android.systemui), specifically
+     * so third-party apps can never block or spoof them - this is a
+     * deliberate security boundary, not a missing permission. An
+     * AccessibilityService does not get around this either: its overlay type
+     * (TYPE_ACCESSIBILITY_OVERLAY) sits in the same "below system UI" bracket
+     * for the same reason. Only a rooted/system-signed build could change
+     * this, which is out of scope here.
+     *
+     * What we CAN do: on most modern Android builds the status bar's own
+     * background is transparent (only the icons/clock are opaque), showing
+     * whatever is drawn behind it. By default WindowManager insets our view
+     * away from that area. Telling it not to (below) lets our translucent
+     * layer extend behind that transparent strip, so the area around the
+     * status bar icons dims along with the rest of the screen - the icons
+     * themselves just stay at fixed brightness, same as every dimmer/night
+     * filter app.
+     */
     private fun showOverlay(opacityPercent: Int) {
         if (overlayView != null) {
             updateOverlayOpacity(opacityPercent)
@@ -102,6 +119,16 @@ class OverlayService : Service() {
         val view = View(this).apply {
             setBackgroundColor(Color.BLACK)
             alpha = opacityPercent.coerceIn(0, 50) / 100f
+
+            // Lay out as if system bars reserve no space, so this view's
+            // bounds extend under the status bar / navigation bar instead
+            // of stopping right below them.
+            @Suppress("DEPRECATION")
+            systemUiVisibility = (
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
+                    View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                )
         }
 
         val overlayType = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -125,6 +152,11 @@ class OverlayService : Service() {
             PixelFormat.TRANSLUCENT
         ).apply {
             gravity = Gravity.TOP or Gravity.START
+            // Extend into notch/cutout area too, on devices that have one.
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                layoutInDisplayCutoutMode =
+                    WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+            }
         }
 
         windowManager.addView(view, params)
