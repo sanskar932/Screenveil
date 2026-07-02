@@ -1,0 +1,15 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Outer ring -->
+    <path
+        android:fillColor="#7C9CFF"
+        android:pathData="M54,20C35.2,20 20,35.2 20,54s15.2,34 34,34 34,-15.2 34,-34S72.8,20 54,20zM54,80c-14.36,0 -26,-11.64 -26,-26s11.64,-26 26,-26 26,11.64 26,26 -11.64,26 -26,26z" />
+    <!-- Inner translucent disc representing the dimming veil -->
+    <path
+        android:fillColor="#7C9CFF"
+        android:fillAlpha="0.45"
+        android:pathData="M54,34C43,34 34,43 34,54s9,20 20,20 20,-9 20,-20 -9,-20 -20,-20z" />
+</vector>
