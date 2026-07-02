@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">ScreenVeil</string>
+
+    <!-- Main screen -->
+    <string name="header_title">ScreenVeil</string>
+    <string name="header_subtitle">Screen dimming overlay</string>
+    <string name="label_enable_overlay">Enable Overlay</string>
+    <string name="label_opacity">Overlay Opacity</string>
+    <string name="opacity_value">%d%%</string>
+    <string name="grant_permission">Grant Overlay Permission</string>
+    <string name="permission_granted">Permission Granted ✓</string>
+    <string name="grant_permission_first">Please grant the overlay permission first</string>
+    <string name="label_video_mode">Video Mode</string>
+    <string name="video_mode_description">Keeps trying to hold the overlay above fullscreen video players (PLAYit, XPlayer, MX Player, etc). This is best-effort: DRM-protected video content can render through a protected hardware path that no overlay app can draw above — this is an Android platform limitation, not a bug.</string>
+    <string name="notification_permission_denied">Notifications are needed to keep the overlay running reliably in the background</string>
+
+    <!-- Notification -->
+    <string name="notification_title">ScreenVeil is active</string>
+    <string name="notification_text">Overlay at %d%% opacity</string>
+    <string name="notification_action_off">Turn Off</string>
+</resources>

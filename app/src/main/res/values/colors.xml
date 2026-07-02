@@ -1,1 +1,16 @@
+<resources>
+    <!-- True black background is used deliberately for AMOLED panels
+         (like the OPPO F17's) since black pixels draw no power. -->
+    <color name="background_black">#FF000000</color>
+    <color name="surface_dark">#FF121212</color>
+    <color name="surface_dark_elevated">#FF1C1C1C</color>
 
+    <color name="accent_primary">#FF7C9CFF</color>
+    <color name="accent_primary_variant">#FF5A78E0</color>
+
+    <color name="text_primary">#FFFFFFFF</color>
+    <color name="text_secondary">#B3FFFFFF</color>
+    <color name="text_disabled">#61FFFFFF</color>
+
+    <color name="divider">#1FFFFFFF</color>
+</resources>
